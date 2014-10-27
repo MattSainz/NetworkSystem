@@ -11,7 +11,6 @@ set(SOURCE_FILES
     src/event_scheduler.cpp
     src/main.cpp
     src/message_manager.cpp
-    src/thread_pool.cpp
-    test/threadTest.h)
+    src/thread_pool.cpp)
 
 add_executable(NetworkSystem ${SOURCE_FILES})
