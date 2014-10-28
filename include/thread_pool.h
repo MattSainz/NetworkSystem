@@ -4,9 +4,9 @@
  */
 #include <pthread.h>
 #include <algorithm>
-#include <sys/semaphore.h>
 #include <fcntl.h>
 #include <queue>
+#include <semaphore.h>
 
 class ThreadPool
 {
@@ -43,6 +43,7 @@ class ThreadPool
         bool thread_avail();
 
         static pthread_mutex_t mutexS;
+
         static pthread_mutex_t mutexC;
 
         /*
@@ -56,16 +57,13 @@ class ThreadPool
 
         static sem_t jobsToDo;
             // lets the threads wait and then work on jobs
-        sem_t availableWorkers;
+        static sem_t availableWorkers;
             //lets anyone asking know how many free workers there are
 
         static size_t threadsInUse;
 
         size_t maxNumThreads;
             //the number of threads aviable to the application
-
-        size_t numJobsToDo;
-            // the number of jobs to do
 
         static std::queue<Job> jobs;
             //stores all the jobs to be done
@@ -80,5 +78,7 @@ class ThreadPool
         static void threadPush(Job& new_job);
 
         static void* workPlace(void *param);
+
+        static bool keepRunning;
 };
 

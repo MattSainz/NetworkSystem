@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #include "../include/message_manager.h"
 
 using namespace std;
@@ -92,6 +93,7 @@ size_t Message::msgLen()
 
 void Message::msgFlat(char *buffer)
 {
+  bzero(buffer, sizeof(buffer));
   std::list<char*>::iterator it = raw_data.begin();
   while( it != raw_data.end() )
   {
