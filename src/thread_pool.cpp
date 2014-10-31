@@ -36,14 +36,7 @@ ThreadPool::ThreadPool(size_t threadCount)
 ThreadPool::~ThreadPool()
 {
     keepRunning = false;
-    /*
-    figure out how to kill any left overs nicely
-    for(int i = 0; i < maxNumThreads; i++)
-    {
-        sem_post(&jobsToDo);
-            //wake up all of the threads so they can stop running
-    }
-    */
+    while( jobs.size() > 0);
     sem_destroy(&jobsToDo);
     sem_destroy(&availableWorkers);
     pthread_mutex_destroy(&mutexC);

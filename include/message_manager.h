@@ -65,18 +65,18 @@ class Message
          */
         void msgFlat(char* buffer);
 
-        std::list<char*> get_msg();
+        std::list<char> get_msg();
 
         /*
          * just reassigns pointers, assumes user did all the
          * memory management
          */
-        void set_msg(std::list<char*> new_msg);
+        void set_msg(std::list<char> new_msg);
 
     private:
         size_t msg_len;
         char *msg_content;
-        std::list<char *> raw_data;
+        std::list<char> raw_data;
         size_t buff_size = 256;
         /*
          * uses an over allocated array and generates a sub char array

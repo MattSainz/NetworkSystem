@@ -13,44 +13,33 @@ Message::Message()
 Message::Message(char* msg, size_t len)
 {
     msg_len = len;
-    char* tmp = new char[len+1];
-    memcpy(tmp, msg, len+1);
-    raw_data.push_back(tmp);
+    for(int i = 0; i < len; i++)
+        raw_data.push_back(msg[i]);
+
 }//end msg constructor
 
 Message::~Message()
 {
-  std::list<char*>::iterator doomed = raw_data.begin();
-  while(doomed!= raw_data.end())
-  {
-      delete *doomed;
-      doomed++;
-  }
   raw_data.empty();
   msg_len = 0;
 }//end destructor
 
 void Message::msgAddHdr(char *hdr, size_t len)
 {
-    char* tmp= new char[len+1];
-    // O(1) where hdr << msg_len
-    memcpy(tmp, hdr, len+1);
-    //O(1)
-    raw_data.push_front(tmp);
+    for(int i = 0; i < len; i++)
+    {
+      raw_data.push_front(hdr[i]);
+    }
     msg_len += len;
 }//end msgAdd
 
 char * Message::msgStripHdr(size_t len)
 {
     char* to_ret = new char[len];
-    char* seg;
-    int i = 0;
-    while( i < len )
+    for(int i = 0; i < len; i++ )
     {
-      seg = raw_data.front();
+      to_ret[i] = raw_data.front();
       raw_data.pop_front();
-      i += strlen(seg) + 1;
-      memcpy(to_ret, seg, i);
     }
     msg_len -= len;
     return to_ret;
@@ -63,16 +52,17 @@ int Message::msgSplit(Message& secondMsg, int len)
   if( len < msg_len && (len > 0) )
   {
     to_ret = 1;
-    std::list<char*> new_raw;
+    std::list<char> new_raw;
     int i = 0;
     //O(1)
     while(i <= len)
     {
         new_raw.push_front(raw_data.back());
         raw_data.pop_back();
-        i += strlen(new_raw.front())+1;
+        i++;
     }
     secondMsg.set_msg(new_raw);
+    secondMsg.setLen(len);
     msg_len -= len;
   }
   return to_ret;
@@ -80,9 +70,12 @@ int Message::msgSplit(Message& secondMsg, int len)
 
 void Message::msgJoin(Message& secondMsg)
 {
-  //O(n)
+  for( int i = 0; i < secondMsg.msgLen(); i++)
+  {
+    raw_data.push_back(secondMsg.get_msg().back());
+    secondMsg.get_msg().pop_back();
+  }
   msg_len += secondMsg.msgLen();
-  raw_data.splice(raw_data.end(), raw_data, secondMsg.get_msg().begin());
   secondMsg.setLen(0);
 }//end msgJoin
 
@@ -93,20 +86,24 @@ size_t Message::msgLen()
 
 void Message::msgFlat(char *buffer)
 {
+  int idx = 0;
   bzero(buffer, sizeof(buffer));
-  std::list<char*>::iterator it = raw_data.begin();
+  std::list<char>::iterator it = raw_data.begin();
+
+  int i = 0;
   while( it != raw_data.end() )
   {
-    strcat(buffer, *it++);
+    buffer[i++] = *it++;
   }
+
 }//end msg_flat
 
-std::list<char*> Message::get_msg()
+std::list<char> Message::get_msg()
 {
     return raw_data;
 }//end get_msg
 
-void Message::set_msg(std::list<char*> new_msg)
+void Message::set_msg(std::list<char> new_msg)
 {
    raw_data = new_msg;
 }//end set_msg

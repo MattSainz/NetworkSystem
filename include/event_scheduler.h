@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <algorithm>
 
-class EventScheduler
+ class EventScheduler
 {
 
   typedef struct
